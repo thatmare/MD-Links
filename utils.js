@@ -2,9 +2,9 @@ const fs = require('fs'); // file system
 const path = require('node:path');
 // const pathInput = process.argv[2];
 
-const getExt = (f) => {
-    return path.extname(f);
-};
+// const getExt = (f) => {
+//     return path.extname(f);
+// };
 
 const readingFile = (f) => {
     return new Promise((resolve, reject) => {
@@ -18,17 +18,29 @@ const readingFile = (f) => {
     });
   };
 
-const readDirectory = (folder) => {
+// const readDirectory = (folder) => {
+//     return new Promise((resolve, reject) => {
+//         fs.readdir(folder, (err, data) => {
+//             if(err) {
+//                 reject(err);
+//             } else {
+//                 resolve(data);
+//             }
+//         });
+//     });
+// };
+
+const filterDirectory = (pathInput, ext) => {
     return new Promise((resolve, reject) => {
-        fs.readdir(folder, (err, data) => {
+        fs.readdir(pathInput, (err, data) => {
             if(err) {
-                reject(err);
+                reject(err)
             } else {
-                resolve(data);
+                resolve(data.filter(f => path.extname(f) === '.md'))
             }
-        });
-    });
-};
+        })
+    })
+}
 
 // // fs.readdir(folder, function(err, data) { // consolea los archivos dentro de ./carpetaejemplo
 // //     data.forEach(i => console.log(i));
@@ -70,6 +82,5 @@ const readDirectory = (folder) => {
 
 module.exports = {
   readingFile,
-  getExt,
-  readDirectory,
+  filterDirectory
 };

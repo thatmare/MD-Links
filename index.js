@@ -13,17 +13,40 @@
 
 // console.log(mdlinks(pathInput));
 
-const { getExt, readingFile, readDirectory } = require('./utils.js');
+const { readingFile, filterDirectory } = require('./utils.js');
 const pathInput = process.argv[2];
 
 const mdlinks = (path) => {
-  readDirectory(path).then((data) => {
-    console.log(data)
-  })
-  .catch((err) => {
-    console.error(err)
-  })
-}
+  filterDirectory(path)
+    .then((data) => {
+      data.forEach((file) => {
+        const filePath = `${path}/${file}`
+        readingFile(filePath)
+          .then((content) => {
+            console.log(content);
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+};
+
+mdlinks(pathInput);
+
+
+// const mdlinks = (path, ext) => {
+//   filterDirectory(path, ext).then((data) => {
+//     let file = data.forEach(i => i.toString())
+//     console.log(readingFile(file))
+//   })
+//   .catch((err) => {
+//     console.error(err)
+//   })
+// }
 
 // const mdlinks = (path) => {
 //   readingFile(path).then((data) => {
@@ -36,6 +59,3 @@ const mdlinks = (path) => {
 //     console.error(error)
 //   })
 // }
-
-mdlinks(pathInput);
-
