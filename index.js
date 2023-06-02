@@ -13,12 +13,15 @@
 
 // console.log(mdlinks(pathInput));
 
-const { readingFile } = require('./utils.js');
+const { getExt, readingFile } = require('./utils.js');
 const pathInput = process.argv[2];
 
 const mdlinks = (path) => {
   readingFile(path).then((data) => {
     console.log(data)
+  })
+  .then(() => {
+    console.log(getExt(path))
   })
   .catch((error) => {
     console.error(error)
