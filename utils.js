@@ -17,6 +17,23 @@ const readingFile = (f) => {
       });
     });
   };
+
+const readDirectory = (folder) => {
+    return new Promise((resolve, reject) => {
+        fs.readdir(folder, (err, data) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve(data);
+            }
+        });
+    });
+};
+
+// // fs.readdir(folder, function(err, data) { // consolea los archivos dentro de ./carpetaejemplo
+// //     data.forEach(i => console.log(i));
+// // })
+
 // const isPathAbsolute = (pathInput) => { // output es un booleano: true si es absoluta, false si es relativa
 //     return path.isAbsolute(pathInput);
 // };
@@ -29,10 +46,6 @@ const readingFile = (f) => {
 
 // const fs = require('fs')  
 // // const folder = process.argv[2]  
-
-// // fs.readdir(folder, function(err, data) { // consolea los archivos dentro de ./carpetaejemplo
-// //     data.forEach(i => console.log(i));
-// // })
 
 // // const file = process.argv[2];
 // // const path = require('node:path')
@@ -58,4 +71,5 @@ const readingFile = (f) => {
 module.exports = {
   readingFile,
   getExt,
+  readDirectory,
 };
