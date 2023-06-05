@@ -13,7 +13,7 @@
 
 // console.log(mdlinks(pathInput));
 
-const { readingFile, filterDirectory } = require('./utils.js');
+const { readingFile, filterDirectory, filterLinks } = require('./utils.js');
 const pathInput = process.argv[2];
 
 const mdlinks = (path) => {
@@ -23,7 +23,7 @@ const mdlinks = (path) => {
         const filePath = `${path}/${file}`
         readingFile(filePath)
           .then((content) => {
-            console.log(content);
+            console.log(filterLinks(content))
           })
           .catch((err) => {
             console.error(err);
