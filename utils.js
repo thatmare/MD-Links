@@ -38,18 +38,47 @@ const filterLinks = (content) => {
 //     });
 // };
 
-const filterDirectory = (pathInput) => {
-    return new Promise((resolve, reject) => {
-        fs.readdir(pathInput, (err, data) => {
-            if(err) {
-                reject(err)
-            } else {
-                resolve(data.filter(f => path.extname(f) === '.md'))
-            }
-        })
-    })
-} // recursividad: escenario de tener una carpeta dentro de esta
+// const filterDirectory = (pathInput) => {
+//     return new Promise((resolve, reject) => {
+//         fs.readdir(pathInput, (err, data) => {
+//             if(err) {
+//                 reject(err)
+//             } else {
+//                 resolve(data.filter(f => path.extname(f) === '.md'))
+//             }
+//         })
+//     })
+// } // recursividad: escenario de tener una carpeta dentro de esta
 // Usar fx síncrona de readdirSync
+
+const filterDirectorySync = (pathInput) => {
+  try {
+    const data = fs.readdirSync(pathInput);
+    return data.filter(f => path.extname(f) === '.md');
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// const filterDirectorySync = (pathInput) => {
+//   try {
+//     const files = fs.readdirSync(pathInput);
+//     const mdFiles = files.filter((file) => path.extname(file) === '.md');
+//     const subDirectories = files.filter((file) =>
+//       fs.statSync(path.join(pathInput, file)).isDirectory()
+//     );
+
+//     const subFiles = subDirectories.reduce((acc, directory) => {
+//       const subPath = path.join(pathInput, directory);
+//       return [...acc, ...filterDirectorySync(subPath)];
+//     }, []);
+
+//     return [...mdFiles, ...subFiles];
+//   } catch (err) {
+//     console.error(err);
+//     return [];
+//   }
+// };
 
 // // fs.readdir(folder, function(err, data) { // consolea los archivos dentro de ./carpetaejemplo
 // //     data.forEach(i => console.log(i));
@@ -91,6 +120,21 @@ const filterDirectory = (pathInput) => {
 
 module.exports = {
   readingFile,
-  filterDirectory,
+  filterDirectorySync,
   filterLinks,
 };
+
+
+// const Fs = require('fs');
+// const Path = require('path');
+// const traverseSync = dir => ({
+//   path: dir,
+//   children: Fs.readdirSync(dir).map(file => {
+//     const path = Path.join(dir, file);
+//     console.log(Fs.lstatSync(path).isDirectory()
+//       ? traverseSync(path)
+//       : { path });
+//   })
+// });
+
+// traverseSync(process.argv[2])
