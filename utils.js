@@ -1,3 +1,4 @@
+const axios = require('axios')
 const fs = require('fs'); // file system
 const path = require('node:path');
 // const pathInput = process.argv[2];
@@ -18,38 +19,33 @@ const readingFile = (f) => {
     });
   };
 
+// const httpRequest = () => {
+//   return new Promise((resolve, reject) => {
+//     const config = {
+//       method: 'head',
+//       url: 'https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue'
+//     }
+
+//     axios(config).then((res) => {
+//         resolve(res.data)
+//       })
+//       .catch((err) => {
+//         reject(err)
+//       });
+//   });
+// };
+
+// httpRequest().then((status) => {
+//   console.log(status);
+// })
+// .catch((err) => {
+//   console.error(err)
+// })
 
 const filterLinks = (content) => {
     const regEx = /(http[s]?:\/\/[^\)]+)/g;
     return String(content.match(regEx));
 }
-//buscar regex como arrojar todo dentro de ciertos caracteres
-// jsdom
-
-// const readDirectory = (folder) => {
-//     return new Promise((resolve, reject) => {
-//         fs.readdir(folder, (err, data) => {
-//             if(err) {
-//                 reject(err);
-//             } else {
-//                 resolve(data);
-//             }
-//         });
-//     });
-// };
-
-// const filterDirectory = (pathInput) => {
-//     return new Promise((resolve, reject) => {
-//         fs.readdir(pathInput, (err, data) => {
-//             if(err) {
-//                 reject(err)
-//             } else {
-//                 resolve(data.filter(f => path.extname(f) === '.md'))
-//             }
-//         })
-//     })
-// } // recursividad: escenario de tener una carpeta dentro de esta
-// Usar fx síncrona de readdirSync
 
 const filterDirectorySync = (pathInput) => {
   try {
@@ -60,6 +56,7 @@ const filterDirectorySync = (pathInput) => {
   }
 }
 
+// CON ESTA FX LOGRO CONSOLEAR LOS ARCHIVOS EN LA CARPETA RECURSIVA
 // const filterDirectorySync = (pathInput) => {
 //   try {
 //     const files = fs.readdirSync(pathInput);
@@ -92,32 +89,6 @@ const filterDirectorySync = (pathInput) => {
 //     return path.resolve(pathInput);
 // };
 
-// console.log(fs.existsSync(pathInput))
-
-// const fs = require('fs')  
-// // const folder = process.argv[2]  
-
-// // const file = process.argv[2];
-// // const path = require('node:path')
-
-// const readingFile = (f) => {
-//     fs.readFile(f, 'utf8', (err, data) => {
-//         if(err) throw error;
-//         return data;
-//     })
-// }
-
-// fs.readFile(file, 'utf8', (err, data) => { // consolea las lineas de sample.md a la misma altura de la carpeta
-//     console.log(data);
-// })
-
-//console.log(path.extname(file)) // consolea la extension del archivo dado sample.md
-  
-// fs.readFile(file, 'utf8', (err, data) => {
-//  const lines = data.split('\n').length - 1;
-//  console.log(lines);
-// })
-
 module.exports = {
   readingFile,
   filterDirectorySync,
@@ -138,3 +109,17 @@ module.exports = {
 // });
 
 // traverseSync(process.argv[2])
+
+let url = 'https://httpbin.org/status/404'
+
+axios.get(url)
+  .then(response => {
+    console.log(`Status: ${response.status}`);
+  })
+  .catch(error => {
+    if (error.response) {
+      console.log(`Status: ${error.response.status}`);
+    } else {
+      console.log('Error:', error.message);
+    }
+  });
