@@ -18,6 +18,14 @@ const readingFile = (f) => {
     });
   };
 
+
+const filterLinks = (content) => {
+    const regEx = /(http[s]?:\/\/[^\)]+)/g;
+    return String(content.match(regEx));
+}
+//buscar regex como arrojar todo dentro de ciertos caracteres
+// jsdom
+
 // const readDirectory = (folder) => {
 //     return new Promise((resolve, reject) => {
 //         fs.readdir(folder, (err, data) => {
@@ -30,7 +38,7 @@ const readingFile = (f) => {
 //     });
 // };
 
-const filterDirectory = (pathInput, ext) => {
+const filterDirectory = (pathInput) => {
     return new Promise((resolve, reject) => {
         fs.readdir(pathInput, (err, data) => {
             if(err) {
@@ -40,7 +48,8 @@ const filterDirectory = (pathInput, ext) => {
             }
         })
     })
-}
+} // recursividad: escenario de tener una carpeta dentro de esta
+// Usar fx síncrona de readdirSync
 
 // // fs.readdir(folder, function(err, data) { // consolea los archivos dentro de ./carpetaejemplo
 // //     data.forEach(i => console.log(i));
@@ -82,5 +91,6 @@ const filterDirectory = (pathInput, ext) => {
 
 module.exports = {
   readingFile,
-  filterDirectory
+  filterDirectory,
+  filterLinks,
 };
