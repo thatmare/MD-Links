@@ -24,10 +24,19 @@ const readingFile = (f) => {
     });
   };
 
+const example = '## Heading 2 [Vincular una solicitud de cambios a una propuesta](https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)'
+
 const filterLinks = (content) => {
     const regEx = /(http[s]?:\/\/[^\)]+)/g;
-    return content.match(regEx) || []; // si no se encuentran enlaces, se devuelve un array vacío
+    
+    const array = Array.from(content.match(regEx), element => ({
+      href: element[2],
+    }));
+
+    return array
 }
+
+console.log(filterLinks(example))
 
 const httpRequest = (url) => {
   return axios.get(url)
