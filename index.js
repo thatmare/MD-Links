@@ -9,7 +9,7 @@ const mdlinks = (path) => {
       .then((content) => {
         const links = filterLinks(content);
         console.log(links)
-        return Promise.all(links.map(link => httpRequest(link)));
+        return Promise.all(links.map(link => httpRequest(link.link)));
       })
       .catch((err) => {
         console.error(err);
