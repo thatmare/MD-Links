@@ -3,9 +3,14 @@ const fs = require('fs'); // file system
 const path = require('node:path');
 // const pathInput = process.argv[2];
 
-// const getExt = (f) => {
-//     return path.extname(f);
-// };
+const filterDirectorySync = (pathInput) => {
+  try {
+    const data = fs.readdirSync(pathInput);
+    return data.filter(f => path.extname(f) === '.md');
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 const readingFile = (f) => {
     return new Promise((resolve, reject) => {
@@ -19,42 +24,14 @@ const readingFile = (f) => {
     });
   };
 
-// const httpRequest = () => {
-//   return new Promise((resolve, reject) => {
-//     const config = {
-//       method: 'head',
-//       url: 'https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue'
-//     }
-
-//     axios(config).then((res) => {
-//         resolve(res.data)
-//       })
-//       .catch((err) => {
-//         reject(err)
-//       });
-//   });
-// };
-
-// httpRequest().then((status) => {
-//   console.log(status);
-// })
-// .catch((err) => {
-//   console.error(err)
-// })
-
 const filterLinks = (content) => {
     const regEx = /(http[s]?:\/\/[^\)]+)/g;
-    return String(content.match(regEx));
+    return content.match(regEx) || []; // si no se encuentran enlaces, se devuelve un array vacío
 }
 
-const filterDirectorySync = (pathInput) => {
-  try {
-    const data = fs.readdirSync(pathInput);
-    return data.filter(f => path.extname(f) === '.md');
-  } catch (err) {
-    console.error(err);
-  }
-}
+const httpRequest = (url) => {
+  return axios.get(url)
+};
 
 // CON ESTA FX LOGRO CONSOLEAR LOS ARCHIVOS EN LA CARPETA RECURSIVA
 // const filterDirectorySync = (pathInput) => {
@@ -93,6 +70,7 @@ module.exports = {
   readingFile,
   filterDirectorySync,
   filterLinks,
+  httpRequest,
 };
 
 
@@ -110,16 +88,6 @@ module.exports = {
 
 // traverseSync(process.argv[2])
 
-let url = 'https://httpbin.org/status/404'
 
-axios.get(url)
-  .then(response => {
-    console.log(`Status: ${response.status}`);
-  })
-  .catch(error => {
-    if (error.response) {
-      console.log(`Status: ${error.response.status}`);
-    } else {
-      console.log('Error:', error.message);
-    }
-  });
+
+
