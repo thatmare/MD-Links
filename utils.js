@@ -1,5 +1,5 @@
-const axios = require('axios')
-const fs = require('fs'); // file system
+const axios = require('axios');
+const fs = require('fs'); // fle system
 const path = require('node:path');
 // const pathInput = process.argv[2];
 
@@ -24,22 +24,21 @@ const readingFile = (f) => {
     });
   };
 
-  const filterLinks = (content) => {
-    const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)|http[s]?:\/\/[^\s)]+/g;
+const filterLinks = (content) => {
+  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)|http[s]?:\/\/[^\s)]+/g;
   
-    const links = Array.from(content.matchAll(regEx), matchedLink => {
-      const title = matchedLink[1] || matchedLink[0];
-      const link = matchedLink[2] || matchedLink[0];
-      return {
-        title,
-        link,
-      };
-    });
+  const links = Array.from(content.matchAll(regEx), matchedLink => {
+    const title = matchedLink[1];
+    const link = matchedLink[2];
+    return {
+      title,
+      link,
+    };
+  });
   
-    return links;
-  };
+  return links;
+};
   
-
 // const filterLinks = (content) => {
 //     const regEx = /(http[s]?:\/\/[^\)]+)/g;
 //     return content.match(regEx)

@@ -6,23 +6,28 @@ const mdlinks = (path) => {
   const allPromises = data.map(file => {
     const filePath = `${path}/${file}`;
     return readingFile(filePath)
-      .then((content) => {
+      .then((content) => { 
         const links = filterLinks(content);
-        console.log(links)
-        return Promise.all(links.map(link => httpRequest(link.link)));
+        return Promise.all(links.flatMap(link => {
+          return httpRequest(link.link)
+          .then(({ status }) => {
+            return { ...link, status: status }
+          })
+        }));
       })
       .catch((err) => {
         console.error(err);
         return [];
       });
-  });
 
-  Promise.all(allPromises)
-    .then(responses => {
-      const flattenedResponses = responses.flat();
-      flattenedResponses.forEach(response => {
-        console.log(`Status: ${response.status}`);
-      });
+  })
+  return Promise.all(allPromises)
+  .then(responses => {   
+    const flattenedResponses = responses.flat();
+    console.log(flattenedResponses)
+      // flattenedResponses.forEach(response => {
+      //   console.log(`Status: ${response.status}`);
+      // });
     })
     .catch(error => {
       if(error.response) {
