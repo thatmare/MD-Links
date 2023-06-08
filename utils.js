@@ -25,7 +25,7 @@ const readingFile = (f) => {
   };
 
 const filterLinks = (content) => {
-  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)|http[s]?:\/\/[^\s)]+/g;
+  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
   
   const links = Array.from(content.matchAll(regEx), matchedLink => {
     const title = matchedLink[1];
@@ -39,25 +39,85 @@ const filterLinks = (content) => {
   return links;
 };
   
-// const filterLinks = (content) => {
-//     const regEx = /(http[s]?:\/\/[^\)]+)/g;
-//     return content.match(regEx)
-// }
+// const links = filterLinks('## Heading 1parrafo cualquiera[Pixar](https://www.pixar.com/error404) ## Heading 1parrafo cualquiera[Google](https://www.google.com)## Heading 1parrafo cualquiera[Google](https://www.googleeacom)');
 
-// const filterLinks = (content) => {
-//   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
-//   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
+// console.log(links)
+// const httpRequest = (url) => {
+//   return axios.get(url)
+//     .then((response) => {
+//       console.log(response.status)
+//     })
+//     .catch((error) => {
+//       console.error(error.response.status)
+//     })
+// };
 
-//   const links = Array.from(content.matchAll(regEx), matchedLink => ({
-//     title: matchedLink[1],
-//     link: matchedLink[2],
+// const httpRequest = (link) => {
+//   return axios.get(link)
+//     .then((response) => {
+//       if(response.status === 200) {
+//         return {...link, status: response.status, message: 'OK'}
+//       }
+//     })
+//     .catch((error) => {
+//       return {...link, status: error.response.status, message: 'FAIL'}
+//     })
+// };
+
+// const httpRequest = (links) => {
+//   return Promise.all(links.forEach(link => {
+//     return axios.get(link.link)
+//     .then(response => {
+//       return {
+//         title: link.title,
+//         link: link.link,
+//         status: response.status,
+//         message: 'OK',
+//       };
+//     })
+//     .catch(error => {
+//       return {
+//         title: link.title,
+//         link: link.link,
+//         status: error.response.status,
+//         message: 'FAIL',
+//       }
+//     })
 //   }))
+// };
 
-//   return links;
-// }
+const httpRequest = (links) => {
+  const promises = links.map(link => {
+    return axios
+      .get(link.link)
+      .then(response => {
+        console.log( {
+          title: link.title,
+          link: link.link,
+          status: response.status,
+          message: response.statusText,
+        });
+      })
+      .catch(error => {
+        if (error.response) {
+          console.log( {
+            title: link.title,
+            link: link.link,
+            status: error.response.status,
+            message: error.response.statusText,
+          })
+        } else if (error.request) {
+          console.log({
+            title: link.title,
+            link: link.link,
+            status: null,
+            message: 'FAIL',
+          })
+        };
+      });
+  });
 
-const httpRequest = (url) => {
-  return axios.get(url)
+  return Promise.all(promises);
 };
 
 module.exports = {
