@@ -39,7 +39,7 @@ const filterLinks = (content) => {
   return links;
 };
   
-const links = filterLinks('## Heading 1parrafo cualquiera[Google](https://www.pixar.com/error404)');
+const links = filterLinks('## Heading 1parrafo cualquiera[Pixar](https://www.pixar.com/error404) ## Heading 1parrafo cualquiera[Google](https://www.google.com)');
 
 // const filterLinks = (content) => {
 //     const regEx = /(http[s]?:\/\/[^\)]+)/g;
@@ -126,9 +126,6 @@ const httpRequest = (links) => {
 
   return Promise.all(promises);
 };
-
-
-console.log(httpRequest(links))
 
 module.exports = {
   readingFile,
