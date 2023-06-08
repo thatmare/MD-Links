@@ -25,7 +25,7 @@ const readingFile = (f) => {
   };
 
 const filterLinks = (content) => {
-  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)|http[s]?:\/\/[^\s)]+/g;
+  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
   
   const links = Array.from(content.matchAll(regEx), matchedLink => {
     const title = matchedLink[1];
@@ -39,6 +39,8 @@ const filterLinks = (content) => {
   return links;
 };
   
+const links = filterLinks('## Heading 1parrafo cualquiera[Google](https://www.pixar.com/error404)');
+
 // const filterLinks = (content) => {
 //     const regEx = /(http[s]?:\/\/[^\)]+)/g;
 //     return content.match(regEx)
@@ -56,13 +58,80 @@ const filterLinks = (content) => {
 //   return links;
 // }
 
-const httpRequest = (url) => {
-  return axios.get(url)
+// const httpRequest = (url) => {
+//   return axios.get(url)
+//     .then((response) => {
+//       console.log(response.status)
+//     })
+//     .catch((error) => {
+//       console.error(error.response.status)
+//     })
+// };
+
+// const httpRequest = (link) => {
+//   return axios.get(link)
+//     .then((response) => {
+//       if(response.status === 200) {
+//         return {...link, status: response.status, message: 'OK'}
+//       }
+//     })
+//     .catch((error) => {
+//       return {...link, status: error.response.status, message: 'FAIL'}
+//     })
+// };
+
+// const httpRequest = (links) => {
+//   return Promise.all(links.forEach(link => {
+//     return axios.get(link.link)
+//     .then(response => {
+//       return {
+//         title: link.title,
+//         link: link.link,
+//         status: response.status,
+//         message: 'OK',
+//       };
+//     })
+//     .catch(error => {
+//       return {
+//         title: link.title,
+//         link: link.link,
+//         status: error.response.status,
+//         message: 'FAIL',
+//       }
+//     })
+//   }))
+// };
+
+const httpRequest = (links) => {
+  const promises = links.map(link => {
+    return axios
+      .get(link.link)
+      .then(response => {
+        console.log( {
+          title: link.title,
+          link: link.link,
+          status: response.status,
+          message: 'OK',
+        });
+      })
+      .catch(error => {
+        console.log( {
+          title: link.title,
+          link: link.link,
+          status: error.response.status,
+          message: 'FAIL',
+        });
+      });
+  });
+
+  return Promise.all(promises);
 };
+
+
+console.log(httpRequest(links))
 
 module.exports = {
   readingFile,
   filterDirectorySync,
   filterLinks,
-  httpRequest,
 };
