@@ -8,12 +8,7 @@ const mdlinks = (path) => {
     return readingFile(filePath)
       .then((content) => { 
         const links = filterLinks(content);
-        return Promise.all(links.flatMap(link => {
-          return httpRequest(link.link)
-          .then(({ status }) => {
-            return { ...link, status: status }
-          })
-        }));
+        return httpRequest(links);
       })
       .catch((err) => {
         console.error(err);
@@ -22,20 +17,20 @@ const mdlinks = (path) => {
 
   })
   return Promise.all(allPromises)
-  .then(responses => {   
-    const flattenedResponses = responses.flat();
-    console.log(flattenedResponses)
-      // flattenedResponses.forEach(response => {
-      //   console.log(`Status: ${response.status}`);
-      // });
-    })
-    .catch(error => {
-      if(error.response) {
-        console.log(`Status: ${error.response.status}`);
-      } else {
-        console.error(`Error:`, error.message)
-      }
-    });
+  // .then(responses => {   
+  //   const flattenedResponses = responses.flat();
+  //   console.log(flattenedResponses)
+  //     // flattenedResponses.forEach(response => {
+  //     //   console.log(`Status: ${response.status}`);
+  //     // });
+  //   })
+  //   .catch(error => {
+  //     if(error.response) {
+  //       console.log(`Status: ${error.response.status}`);
+  //     } else {
+  //       console.error(`Error:`, error.message)
+  //     }
+  //   });
 };
 
 mdlinks(pathInput);

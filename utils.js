@@ -39,25 +39,9 @@ const filterLinks = (content) => {
   return links;
 };
   
-const links = filterLinks('## Heading 1parrafo cualquiera[Pixar](https://www.pixar.com/error404) ## Heading 1parrafo cualquiera[Google](https://www.google.com)');
+// const links = filterLinks('## Heading 1parrafo cualquiera[Pixar](https://www.pixar.com/error404) ## Heading 1parrafo cualquiera[Google](https://www.google.com)## Heading 1parrafo cualquiera[Google](https://www.googleeacom)');
 
-// const filterLinks = (content) => {
-//     const regEx = /(http[s]?:\/\/[^\)]+)/g;
-//     return content.match(regEx)
-// }
-
-// const filterLinks = (content) => {
-//   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
-//   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g;
-
-//   const links = Array.from(content.matchAll(regEx), matchedLink => ({
-//     title: matchedLink[1],
-//     link: matchedLink[2],
-//   }))
-
-//   return links;
-// }
-
+// console.log(links)
 // const httpRequest = (url) => {
 //   return axios.get(url)
 //     .then((response) => {
@@ -111,16 +95,25 @@ const httpRequest = (links) => {
           title: link.title,
           link: link.link,
           status: response.status,
-          message: 'OK',
+          message: response.statusText,
         });
       })
       .catch(error => {
-        console.log( {
-          title: link.title,
-          link: link.link,
-          status: error.response.status,
-          message: 'FAIL',
-        });
+        if (error.response) {
+          console.log( {
+            title: link.title,
+            link: link.link,
+            status: error.response.status,
+            message: error.response.statusText,
+          })
+        } else if (error.request) {
+          console.log({
+            title: link.title,
+            link: link.link,
+            status: null,
+            message: 'FAIL',
+          })
+        };
       });
   });
 
@@ -131,4 +124,5 @@ module.exports = {
   readingFile,
   filterDirectorySync,
   filterLinks,
+  httpRequest,
 };
