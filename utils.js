@@ -1,7 +1,6 @@
 const axios = require('axios');
 const fs = require('fs'); // fle system
 const path = require('node:path');
-// const pathInput = process.argv[2];
 
 const filterDirectorySync = (pathInput) => {
   try {
@@ -41,51 +40,6 @@ const filterLinks = (content) => {
   
 // const links = filterLinks('## Heading 1parrafo cualquiera[Pixar](https://www.pixar.com/error404) ## Heading 1parrafo cualquiera[Google](https://www.google.com)## Heading 1parrafo cualquiera[Google](https://www.googleeacom)');
 
-// console.log(links)
-// const httpRequest = (url) => {
-//   return axios.get(url)
-//     .then((response) => {
-//       console.log(response.status)
-//     })
-//     .catch((error) => {
-//       console.error(error.response.status)
-//     })
-// };
-
-// const httpRequest = (link) => {
-//   return axios.get(link)
-//     .then((response) => {
-//       if(response.status === 200) {
-//         return {...link, status: response.status, message: 'OK'}
-//       }
-//     })
-//     .catch((error) => {
-//       return {...link, status: error.response.status, message: 'FAIL'}
-//     })
-// };
-
-// const httpRequest = (links) => {
-//   return Promise.all(links.forEach(link => {
-//     return axios.get(link.link)
-//     .then(response => {
-//       return {
-//         title: link.title,
-//         link: link.link,
-//         status: response.status,
-//         message: 'OK',
-//       };
-//     })
-//     .catch(error => {
-//       return {
-//         title: link.title,
-//         link: link.link,
-//         status: error.response.status,
-//         message: 'FAIL',
-//       }
-//     })
-//   }))
-// };
-
 const httpRequest = (links) => {
   const promises = links.map(link => {
     return axios
@@ -121,8 +75,8 @@ const httpRequest = (links) => {
 };
 
 module.exports = {
-  readingFile,
   filterDirectorySync,
+  readingFile,
   filterLinks,
   httpRequest,
 };

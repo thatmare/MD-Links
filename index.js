@@ -1,4 +1,4 @@
-const { readingFile, filterDirectorySync, filterLinks, httpRequest } = require('./utils.js');
+const { filterDirectorySync, readingFile, filterLinks, httpRequest } = require('./utils.js');
 const pathInput = process.argv[2];
 
 const mdlinks = (path) => {
