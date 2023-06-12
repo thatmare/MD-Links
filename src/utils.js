@@ -65,42 +65,42 @@ const filterLinks = (content) => {
 // filterLinks('## Heading 2 [Vincular una solicitud de cambios a una propuesta](https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)')
 
 // // ----------------------------------------------------------------node index.js
-// const httpRequest = (existingPath, links) => {
-//   const promises = links.map(link => {
-//     return axios
-//       .get(link.link)
-//       .then(response => {
-//         console.log( {
-//           title: link.title,
-//           link: link.link,
-//           path: existingPath, // arrojar la ruta con el archivo también?
-//           status: response.status,
-//           message: response.statusText,
-//         });
-//       })
-//       .catch(error => {
-//         if (error.response) {
-//           console.log( {
-//             title: link.title,
-//             link: link.link,
-//             path: existingPath,
-//             status: error.response.status,
-//             message: error.response.statusText,
-//           })
-//         } else if (error.request) {
-//           console.log({
-//             title: link.title,
-//             link: link.link,
-//             path: existingPath,
-//             status: null,
-//             message: 'FAIL',
-//           })
-//         };
-//       });
-//   });
+const httpRequest = (file, links) => {
+  const promises = links.map(link => {
+    return axios
+      .get(link.link)
+      .then(response => {
+        return {
+          title: link.title,
+          link: link.link,
+          path: file, // arrojar la ruta con el archivo también?
+          status: response.status,
+          message: response.statusText,
+        }
+      })
+      .catch(error => {
+        if (error.response) {
+          return {
+            title: link.title,
+            link: link.link,
+            path: file,
+            status: error.response.status,
+            message: error.response.statusText,
+          }
+        } else if (error.request) {
+          return {
+            title: link.title,
+            link: link.link,
+            path: file,
+            status: null,
+            message: 'FAIL',
+          }
+        };
+      });
+  });
 
-//   return Promise.all(promises);
-// };
+  return Promise.all(promises);
+};
 
 // const ejemplo = [
 //   {
@@ -115,43 +115,43 @@ const filterLinks = (content) => {
 
 // console.log(httpRequest(ejemplo))
 
-// ---------------------------------------------------------------------md-links cli
-const httpRequest = (existingPath, links) => {
-  const promises = links.map(link => {
-    return axios
-      .get(link.link)
-      .then(response => {
-        return {
-          title: link.title,
-          link: link.link,
-          path: existingPath, // arrojar la ruta con el archivo también?
-          status: response.status,
-          message: response.statusText,
-        };
-      })
-      .catch(error => {
-        if (error.response) {
-          return {
-            title: link.title,
-            link: link.link,
-            path: existingPath,
-            status: error.response.status,
-            message: error.response.statusText,
-          }
-        } else if (error.request) {
-          return {
-            title: link.title,
-            link: link.link,
-            path: existingPath,
-            status: null,
-            message: 'FAIL',
-          }
-        };
-      });
-  });
+// // ---------------------------------------------------------------------md-links cli
+// const httpRequest = (existingPath, links) => {
+//   const promises = links.map(link => {
+//     return axios
+//       .get(link.link)
+//       .then(response => {
+//         return {
+//           title: link.title,
+//           link: link.link,
+//           path: existingPath, // arrojar la ruta con el archivo también?
+//           status: response.status,
+//           message: response.statusText,
+//         };
+//       })
+//       .catch(error => {
+//         if (error.response) {
+//           return {
+//             title: link.title,
+//             link: link.link,
+//             path: existingPath,
+//             status: error.response.status,
+//             message: error.response.statusText,
+//           }
+//         } else if (error.request) {
+//           return {
+//             title: link.title,
+//             link: link.link,
+//             path: existingPath,
+//             status: null,
+//             message: 'FAIL',
+//           }
+//         };
+//       });
+//   });
 
-  return Promise.all(promises);
-};
+//   return Promise.all(promises); // retornar las promesas sin el promise.all, eso va en md-links
+// };
 
 module.exports = {
   resolvePath,
