@@ -36,16 +36,16 @@ const filterDirectorySync = (existingPath) => { // para filtrar archivos en el d
 };
 
 const readingFile = (f) => {
-    return new Promise((resolve, reject) => {
-      fs.readFile(f, 'utf8', (err, data) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(data);
-        };
-      });
+  return new Promise((resolve, reject) => {
+    fs.readFile(f, 'utf8', (err, data) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(data);
+      };
     });
-  };
+  });
+};
 
 const filterLinks = (content) => {
   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g; // recupera dos grupos: texto entre corchetes y link entre paréntesis
@@ -58,40 +58,94 @@ const filterLinks = (content) => {
       link,
     };
   });
-  
   return links;
+  // console.log(links)
 };
   
+// filterLinks('## Heading 2 [Vincular una solicitud de cambios a una propuesta](https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue)')
+
+// // ----------------------------------------------------------------node index.js
+// const httpRequest = (existingPath, links) => {
+//   const promises = links.map(link => {
+//     return axios
+//       .get(link.link)
+//       .then(response => {
+//         console.log( {
+//           title: link.title,
+//           link: link.link,
+//           path: existingPath, // arrojar la ruta con el archivo también?
+//           status: response.status,
+//           message: response.statusText,
+//         });
+//       })
+//       .catch(error => {
+//         if (error.response) {
+//           console.log( {
+//             title: link.title,
+//             link: link.link,
+//             path: existingPath,
+//             status: error.response.status,
+//             message: error.response.statusText,
+//           })
+//         } else if (error.request) {
+//           console.log({
+//             title: link.title,
+//             link: link.link,
+//             path: existingPath,
+//             status: null,
+//             message: 'FAIL',
+//           })
+//         };
+//       });
+//   });
+
+//   return Promise.all(promises);
+// };
+
+// const ejemplo = [
+//   {
+//     title: 'Vincular una solicitud de cambios a una propuesta',
+//     link: 'https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue'
+//   },
+//   {
+//     title: 'Vincular una solicitud de cambios a una propuesta',
+//     link: 'https://docs.github.com/es/issues/tracking-your-work-with-issues/linking-a-pull-request-to-an-issue'
+//   },
+// ]
+
+// console.log(httpRequest(ejemplo))
+
+// ---------------------------------------------------------------------md-links cli
 const httpRequest = (existingPath, links) => {
   const promises = links.map(link => {
     return axios
       .get(link.link)
       .then(response => {
-        console.log( {
+        return {
           title: link.title,
           link: link.link,
           path: existingPath, // arrojar la ruta con el archivo también?
           status: response.status,
           message: response.statusText,
-        });
+        };
       })
       .catch(error => {
         if (error.response) {
-          console.log( {
+          return {
             title: link.title,
             link: link.link,
             path: existingPath,
             status: error.response.status,
             message: error.response.statusText,
-          })
+          }
         } else if (error.request) {
-          console.log( {
+          return {
             title: link.title,
             link: link.link,
             path: existingPath,
             status: null,
             message: 'FAIL',
-          })
+          }
         };
       });
   });

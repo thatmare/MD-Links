@@ -12,5 +12,5 @@ const options = process.argv[3];
 
 mdlinks(path)
     .then((result) => {
-        console.log(result.title)
+        result.forEach(i => console.log('hola', i.title))
     })
