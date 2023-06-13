@@ -58,76 +58,10 @@ const mdlinks = (pathInput, options = { validate }) => {
           });
       })
       .catch((err) => {
-        reject(`${pathInput} does not exist.`, err);
+        reject(err); // rechazar la promesa de mdlinks
       });
   });
 };
-
-
-// const mdlinks = (pathInput, /*options = { validate: false}*/) => {
-//   return new Promise((resolve, reject) => {
-//     const pathResolved = resolvePath(pathInput);
-//     doesPathExist(pathResolved)
-//       .then((existingPath) => {
-//         return isItFile(existingPath)
-//           .then((isFile) => {
-//             if(isFile) {
-//               return readingFile(existingPath)
-//                 .then((content) => {
-//                   const links = filterLinks(existingPath, content);
-//                   return links;
-//                 })
-//             } else {
-//               const data = filterDirectorySync(existingPath)
-//               const allPromises = data.map(file => {
-//                 return readingFile(file)
-//                   .then(content => {
-//                     const links = filterLinks(file, content)
-//                     return links
-//                   })
-//               })
-            
-//             }
-
-//           })
-//       })
-//       .catch((err) => {
-//         reject(`${pathInput} does not exist.`, err)
-//       })
-//   })
-// };
-
-// const mdlinks = (pathInput, options = { validate: false}) => {
-//   return new Promise((resolve, reject) => {
-//     const pathResolved = resolvePath(pathInput);
-//     doesPathExist(pathResolved)
-//       .then((existingPath) => {
-//         const data = filterDirectorySync(existingPath);
-//         const allPromises = data.map(file => {
-//           return readingFile(file)
-//             .then(content => {
-//               const links = filterLinks(file, content)
-//               return links;
-//               // return httpRequest(file, links)
-//             })
-//             .catch(err => {
-//               console.error(err);
-//               return [];
-//             });
-//         });
-
-//         return Promise.all(allPromises);
-//       })
-//       .then((results) => {
-//         const flatLinks = results.flat()
-//         resolve(flatLinks);
-//       })
-//       .catch((err) => {
-//         console.error('PATH IS NOT VALID', err);
-//         reject(err);
-//       });
-//   });
-// };
 
 const promesa = mdlinks(pathInput, {validate: true})
 console.log(promesa, 'aqui promesa')
@@ -138,7 +72,6 @@ console.log(promesa, 'aqui promesa')
   .catch((err) => {
     console.error(err, 'aqui catch del error');
   });
-
 
 module.exports = {
   mdlinks,
