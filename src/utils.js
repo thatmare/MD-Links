@@ -24,6 +24,18 @@ const doesPathExist = (pathResolved) => { // esta fx recibe la ruta resuelta a a
   });
 };
 
+const isItFile = (existingPath) => {
+  return new Promise((resolve, reject) => {
+    fs.stat(existingPath, (err, stats) => {
+      if(err) {
+        reject(err)
+      } else {
+        resolve(stats.isFile())
+      }
+    })
+  })
+}
+
 const filterDirectorySync = (existingPath) => { // para filtrar archivos en el directorio, recibe una ruta existente
   try {
     const files = fs.readdirSync(existingPath); // retorna todos los archivos del directorio
@@ -47,15 +59,17 @@ const readingFile = (f) => {
   });
 };
 
-const filterLinks = (content) => {
+const filterLinks = (file, content) => {
   const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g; // recupera dos grupos: texto entre corchetes y link entre paréntesis
   
   const links = Array.from(content.matchAll(regEx), matchedLink => { // crea un array a partir del contenido que hace match con la regEx
     const title = matchedLink[1]; // título es el primer grupo 
     const link = matchedLink[2]; // el link es el segundo grupo
+    const filePath = file;
     return {
       title,
       link,
+      path: filePath,
     };
   });
   return links;
@@ -156,6 +170,7 @@ const httpRequest = (file, links) => {
 module.exports = {
   resolvePath,
   doesPathExist,
+  isItFile,
   filterDirectorySync,
   readingFile,
   filterLinks,
