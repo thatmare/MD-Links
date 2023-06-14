@@ -8,20 +8,25 @@ const linksToAnalyze = (pathInput) => {
     return isItFile(existingPath).then(isFile => {
       if(isFile) {
         return readingFile(existingPath).then(content => {
-          const links = filterLinks(existingPath, content)
-          resolve(links)
+            try {
+              resolve(filterLinks(existingPath, content));
+            } catch (error) {
+              resolve(error.message); // Resuelve la promesa con el mensaje de error
+            }
         });
       } else {
         const data = filterDirectorySync(existingPath);
         const allLinksFromDir = data.map(file => {
           return readingFile(file).then(content => {
-            const links = filterLinks(existingPath, content);
-            return links;
+            try {
+              resolve(filterLinks(existingPath, content))
+            } catch(error) {
+              resolve(error.message)
+            }
           });
         });
         Promise.all(allLinksFromDir).then(results => {
-          const allLinks = results.flat();
-          resolve(allLinks);
+          resolve(results.flat())
         });
       };
     });
@@ -70,8 +75,8 @@ linksToAnalyze(pathInput)
     console.error(err);
   });
 
-const promesa = mdLinks({ validate: true });
-console.log(promesa, 'aqui promesa de links');
+const promesa = mdLinks({ validate: false });
+console.log(promesa, 'aqui promesa de mdlinks');
 promesa
   .then(result => {
     console.log(result, 'aqui then del resultado');
