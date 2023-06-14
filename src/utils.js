@@ -16,7 +16,7 @@ const doesPathExist = (pathResolved) => { // esta fx recibe la ruta resuelta a a
   return new Promise((resolve, reject) => { 
     fs.access(pathResolved, (err) => { 
       if(err) {
-        reject(`${pathResolved} DOES NOT EXIST`, err)
+        reject(`DOES NOT EXIST: ${pathResolved}`, err)
       } else {
         resolve(pathResolved)
       };
@@ -28,7 +28,7 @@ const isItFile = (existingPath) => {
   return new Promise((resolve, reject) => {
     fs.stat(existingPath, (err, stats) => {
       if(err) {
-        reject(err)
+        reject(`COULD NOT FIND IF IT IS A FILE: ${existingPath}`, err)
       } else {
         resolve(stats.isFile())
       }
@@ -42,8 +42,7 @@ const filterDirectorySync = (existingPath) => { // para filtrar archivos en el d
     const absolutePaths = files.map(file => path.join(existingPath, file)); // para cada archivo, une la ruta absoluta con el archivo
     return absolutePaths.filter(f => path.extname(f) === '.md'); // retorna los archivos filtrados
   } catch (err) {
-    console.error(err);
-    // regresar a poner escenario donde no hay archivos md
+    console.error(`NO .md FILES IN: ${existingPath}`, err);
   };
 };
 
@@ -51,7 +50,7 @@ const readingFile = (f) => {
   return new Promise((resolve, reject) => {
     fs.readFile(f, 'utf8', (err, data) => {
       if (err) {
-        reject(err);
+        reject(`COULD NOT READ FILE: ${f}`, err);
       } else {
         resolve(data);
       };
