@@ -36,15 +36,29 @@ const isItFile = (existingPath) => {
   })
 }
 
-const filterDirectorySync = (existingPath) => { // para filtrar archivos en el directorio, recibe una ruta existente
+const filterDirectorySync = (existingPath) => {
+  const files = fs.readdirSync(existingPath);
+  const absolutePaths = files.map(file => path.join(existingPath, file));
+
+  let foundFiles = [];
+
+  absolutePaths.forEach(filePath => {
+    const stats = fs.lstatSync(filePath);
+    if (stats.isDirectory()) {
+      foundFiles = foundFiles.concat(filterDirectorySync(filePath));
+    }
+  });
+
   try {
-    const files = fs.readdirSync(existingPath); // retorna todos los archivos del directorio
-    const absolutePaths = files.map(file => path.join(existingPath, file)); // para cada archivo, une la ruta absoluta con el archivo
-    return absolutePaths.filter(f => path.extname(f) === '.md'); // retorna los archivos filtrados
+    foundFiles = foundFiles.concat(absolutePaths.filter(f => path.extname(f) === '.md'));
+    return foundFiles
   } catch (err) {
     console.error(`NO .md FILES IN: ${existingPath}`, err);
-  };
+  }
 };
+
+// filterDirectorySync('..//carpetaejemplo');
+
 
 const readingFile = (f) => {
   return new Promise((resolve, reject) => {
