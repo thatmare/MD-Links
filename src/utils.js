@@ -36,14 +36,25 @@ const isItFile = (existingPath) => {
   })
 }
 
-const filterDirectorySync = (existingPath) => { // para filtrar archivos en el directorio, recibe una ruta existente
+const filterDirectorySync = (existingPath) => {
+  const files = fs.readdirSync(existingPath);
+  const absolutePaths = files.map(file => path.join(existingPath, file));
+
+  let foundFiles = [];
+
+  absolutePaths.forEach(filePath => {
+    const stats = fs.lstatSync(filePath);
+    if (stats.isDirectory()) {
+      foundFiles = foundFiles.concat(filterDirectorySync(filePath));
+    }
+  });
+
   try {
-    const files = fs.readdirSync(existingPath); // retorna todos los archivos del directorio
-    const absolutePaths = files.map(file => path.join(existingPath, file)); // para cada archivo, une la ruta absoluta con el archivo
-    return absolutePaths.filter(f => path.extname(f) === '.md'); // retorna los archivos filtrados
+    foundFiles = foundFiles.concat(absolutePaths.filter(f => path.extname(f) === '.md'));
+    return foundFiles
   } catch (err) {
     console.error(`NO .md FILES IN: ${existingPath}`, err);
-  };
+  }
 };
 
 const readingFile = (f) => {
@@ -64,17 +75,17 @@ const filterLinks = (file, content) => {
   const links = Array.from(content.matchAll(regEx), matchedLink => { // crea un array a partir del contenido que hace match con la regEx
     const title = matchedLink[1]; // título es el primer grupo 
     const link = matchedLink[2]; // el link es el segundo grupo
-    const filePath = file;
+    
     return {
       title,
       link,
-      path: filePath,
+      path: file,
     };
   });
   return links;
 };
   
-const httpRequest = (file, links) => {
+const httpRequest = (links) => {
   const promises = links.map(link => {
     return axios
       .get(link.link)
@@ -82,7 +93,7 @@ const httpRequest = (file, links) => {
         return {
           title: link.title,
           link: link.link,
-          path: file, // arrojar la ruta con el archivo también?
+          path: link.path,
           status: response.status,
           message: response.statusText,
         }
@@ -92,7 +103,7 @@ const httpRequest = (file, links) => {
           return {
             title: link.title,
             link: link.link,
-            path: file,
+            path: link.path,
             status: error.response.status,
             message: 'FAIL',
           }
@@ -100,7 +111,7 @@ const httpRequest = (file, links) => {
           return {
             title: link.title,
             link: link.link,
-            path: file,
+            path: link.path,
             status: null,
             message: 'FAIL',
           }
@@ -111,6 +122,23 @@ const httpRequest = (file, links) => {
   return Promise.all(promises);
 };
 
+const countUniqueLinks = (linksArray) => {
+  const uniqueLinks = new Set();
+  linksArray.forEach(object => uniqueLinks.add(object.link));
+
+  return uniqueLinks.size;
+};
+
+const countBrokenLinks = (linksArray) => {
+  let count = 0;
+  linksArray.forEach(object => {
+    if(object.status >= 400) {
+      count++
+    }
+  })
+  return count;
+};
+
 module.exports = {
   resolvePath,
   doesPathExist,
@@ -119,4 +147,6 @@ module.exports = {
   readingFile,
   filterLinks,
   httpRequest,
+  countUniqueLinks,
+  countBrokenLinks,
 };
