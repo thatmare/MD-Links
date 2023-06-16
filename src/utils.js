@@ -57,9 +57,6 @@ const filterDirectorySync = (existingPath) => {
   }
 };
 
-// filterDirectorySync('..//carpetaejemplo');
-
-
 const readingFile = (f) => {
   return new Promise((resolve, reject) => {
     fs.readFile(f, 'utf8', (err, data) => {
@@ -88,7 +85,7 @@ const filterLinks = (file, content) => {
   return links;
 };
   
-const httpRequest = (file, links) => {
+const httpRequest = (links) => {
   const promises = links.map(link => {
     return axios
       .get(link.link)
@@ -96,7 +93,7 @@ const httpRequest = (file, links) => {
         return {
           title: link.title,
           link: link.link,
-          path: file,
+          path: link.path,
           status: response.status,
           message: response.statusText,
         }
@@ -106,7 +103,7 @@ const httpRequest = (file, links) => {
           return {
             title: link.title,
             link: link.link,
-            path: file,
+            path: link.path,
             status: error.response.status,
             message: 'FAIL',
           }
@@ -114,7 +111,7 @@ const httpRequest = (file, links) => {
           return {
             title: link.title,
             link: link.link,
-            path: file,
+            path: link.path,
             status: null,
             message: 'FAIL',
           }
@@ -125,6 +122,23 @@ const httpRequest = (file, links) => {
   return Promise.all(promises);
 };
 
+const countUniqueLinks = (linksArray) => {
+  const uniqueLinks = new Set();
+  linksArray.forEach(object => uniqueLinks.add(object.link));
+
+  return uniqueLinks.size;
+};
+
+const countBrokenLinks = (linksArray) => {
+  let count = 0;
+  linksArray.forEach(object => {
+    if(object.status >= 400) {
+      count++
+    }
+  })
+  return count;
+};
+
 module.exports = {
   resolvePath,
   doesPathExist,
@@ -133,4 +147,6 @@ module.exports = {
   readingFile,
   filterLinks,
   httpRequest,
+  countUniqueLinks,
+  countBrokenLinks,
 };

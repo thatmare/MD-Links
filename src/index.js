@@ -1,5 +1,5 @@
 const { resolvePath, doesPathExist, isItFile, filterDirectorySync, readingFile, filterLinks, httpRequest } = require('./utils.js');
-const pathInput = process.argv[2]
+// const pathInput = process.argv[2]
 
 const linksToAnalyze = (pathInput) => {
   return new Promise((resolve, reject) => {
@@ -35,7 +35,7 @@ const mdLinks = (pathInput, options = { validate }) => {
       if(options.validate === false || !options.validate) {
         resolve(links);
       } else {
-        resolve(httpRequest(pathInput, links)); // no se inserta toda la ruta del archivo, pero sí tengo que pasarle el param para httpRequest
+        resolve(httpRequest(links));
       }
     })
     .catch(err => {
@@ -45,6 +45,5 @@ const mdLinks = (pathInput, options = { validate }) => {
 };
 
 module.exports = {
-  linksToAnalyze,
   mdLinks,
 }
