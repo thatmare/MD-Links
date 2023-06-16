@@ -78,11 +78,11 @@ const filterLinks = (file, content) => {
   const links = Array.from(content.matchAll(regEx), matchedLink => { // crea un array a partir del contenido que hace match con la regEx
     const title = matchedLink[1]; // título es el primer grupo 
     const link = matchedLink[2]; // el link es el segundo grupo
-    const filePath = file;
+    
     return {
       title,
       link,
-      path: filePath,
+      path: file,
     };
   });
   return links;
@@ -96,7 +96,7 @@ const httpRequest = (file, links) => {
         return {
           title: link.title,
           link: link.link,
-          path: file, // arrojar la ruta con el archivo también?
+          path: file,
           status: response.status,
           message: response.statusText,
         }

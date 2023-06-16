@@ -14,7 +14,7 @@ const linksToAnalyze = (pathInput) => {
         const data = filterDirectorySync(existingPath);
         const allLinksFromDir = data.map(file => {
           return readingFile(file).then(content => {
-            return filterLinks(existingPath, content);
+            return filterLinks(file, content);
           });
         });
         Promise.all(allLinksFromDir).then(results => {
@@ -29,13 +29,13 @@ const linksToAnalyze = (pathInput) => {
   });
 };
 
-const mdLinks = (options = { validate }) => {
+const mdLinks = (pathInput, options = { validate }) => {
   return new Promise((resolve, reject) => {
     linksToAnalyze(pathInput).then(links => {
       if(options.validate === false || !options.validate) {
         resolve(links);
       } else {
-        resolve(httpRequest(pathInput, links));
+        resolve(httpRequest(pathInput, links)); // no se inserta toda la ruta del archivo, pero sí tengo que pasarle el param para httpRequest
       }
     })
     .catch(err => {
@@ -44,24 +44,7 @@ const mdLinks = (options = { validate }) => {
   });
 };
 
-linksToAnalyze(pathInput)
-  .then(result => {
-    return result;
-  })
-  .catch(err => {
-    console.error(err);
-  });
-
-const promesa = mdLinks({ validate: true });
-console.log(promesa, 'aqui promesa de links');
-promesa
-  .then(result => {
-    console.log(result, 'aqui then del resultado');
-  })
-  .catch(err => {
-    console.error(err, 'aqui catch de error');
-  });
-
-// module.exports = {
-//   mdlinks,
-// }
+module.exports = {
+  linksToAnalyze,
+  mdLinks,
+}
