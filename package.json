@@ -1,6 +1,20 @@
 {
   "name": "md-links",
   "version": "0.1.0",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": ["./src/**"],
+    "coverageThreshold": {
+      "global": {
+        "lines": 70
+      }
+    },
+    "coverageReporters": ["json", "lcov", "text", "clover", "text-summary"],
+    "coverageDirectory": "coverage"
+  },
   "engines": {
     "node": ">=16.x"
   },
@@ -12,7 +26,10 @@
   "dependencies": {
     "axios": "^1.4.0"
   },
-  "bin" : {
+  "bin": {
     "md-links": "./src/cli.js"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
   }
 }
