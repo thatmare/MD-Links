@@ -5,7 +5,6 @@ const path = require('path');
 const resolvePath = (pathInput) => { // recibe input de la ruta
   const boolean = path.isAbsolute(pathInput); // isAbsolute regresa booleano si la ruta es absoluta o no
   if(!boolean) { // si es falso (es decir, es relativa)
-    console.log("no es absoluta")
     return path.resolve(pathInput); // regresar la ruta resuelta a absoluta
   } else { // si es true (es absoluta)
     return pathInput; // regresar el input igual
@@ -16,7 +15,7 @@ const doesPathExist = (pathResolved) => { // esta fx recibe la ruta resuelta a a
   return new Promise((resolve, reject) => { 
     fs.access(pathResolved, (err) => { 
       if(err) {
-        reject(`DOES NOT EXIST: ${pathResolved}`, err)
+        reject(Error(`The path does not exist: ${pathResolved}`))
       } else {
         resolve(pathResolved)
       };
@@ -28,7 +27,7 @@ const isItFile = (existingPath) => {
   return new Promise((resolve, reject) => {
     fs.stat(existingPath, (err, stats) => {
       if(err) {
-        reject(`COULD NOT FIND IF IT IS A FILE: ${existingPath}`, err)
+        reject(Error(`It is not a file: ${existingPath}`))
       } else {
         resolve(stats.isFile())
       }
@@ -46,22 +45,24 @@ const filterDirectorySync = (existingPath) => {
     const stats = fs.lstatSync(filePath);
     if (stats.isDirectory()) {
       foundFiles = foundFiles.concat(filterDirectorySync(filePath));
+    } else if (path.extname(filePath) === '.md') {
+      foundFiles.push(filePath);
     }
   });
 
-  try {
-    foundFiles = foundFiles.concat(absolutePaths.filter(f => path.extname(f) === '.md'));
-    return foundFiles
-  } catch (err) {
-    console.error(`NO .md FILES IN: ${existingPath}`, err);
+  if (foundFiles.length === 0) {
+    throw new Error(`No markdown files in: ${existingPath}`);
   }
+
+  return foundFiles;
 };
+
 
 const readingFile = (f) => {
   return new Promise((resolve, reject) => {
     fs.readFile(f, 'utf8', (err, data) => {
       if (err) {
-        reject(`COULD NOT READ FILE: ${f}`, err);
+        reject(`Could not read file: ${f}`, err);
       } else {
         resolve(data);
       };
@@ -82,6 +83,7 @@ const filterLinks = (file, content) => {
       path: file,
     };
   });
+
   return links;
 };
   

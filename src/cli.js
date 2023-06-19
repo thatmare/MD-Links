@@ -17,33 +17,51 @@ const colors = {
 if(!validateOption && !statsOption) {
   mdLinks(pathInput, { validate: false })
     .then(linksArray => {
-      linksArray.forEach(l => console.log(`${colors.reset}Title: ${colors.title}${l.title} \n ${colors.reset}Link: ${colors.teal}${l.link} \n ${colors.reset}Path: ${colors.pink}${l.path} \n`));
+      if(linksArray.length === 0) {
+        console.log(`${colors.red} No links were found.`)
+      } else {
+        linksArray.forEach(l => console.log(`${colors.reset}Title: ${colors.blue}${l.title} \n ${colors.reset}Link: ${colors.teal}${l.link} \n ${colors.reset}Path: ${colors.pink}${l.path} \n`));
+      }
     })
     .catch(error => {
-      console.error('catch de validate false', error);
+      console.error(`${colors.red}`, error.message);
     });
 } else if(validateOption && !statsOption) {
     mdLinks(pathInput, { validate: true })
       .then(linksArray => {
-        linksArray.forEach(l => console.log(` ${colors.reset}Title: ${colors.blue} ${l.title} \n ${colors.reset}Link: ${colors.teal}${l.link} \n ${colors.reset}Path: ${colors.pink}${l.path} \n ${colors.reset}Status: ${colors.yellow}${l.status} \n ${colors.reset}Message: ${colors.yellow}${l.message} \n`));
+        if(linksArray.length === 0) {
+          console.log(`${colors.red} No links were found.`)
+        } else {
+          linksArray.forEach(l => console.log(` ${colors.reset}Title: ${colors.blue} ${l.title} \n ${colors.reset}Link: ${colors.teal}${l.link} \n ${colors.reset}Path: ${colors.pink}${l.path} \n ${colors.reset}Status: ${colors.yellow}${l.status} \n ${colors.reset}Message: ${colors.yellow}${l.message} \n`)); 
+        }
       })
       .catch(error => {
-        console.error('catch de validate true', error);
+        console.error(`${colors.red}`, error.message);
       });
 } else if(statsOption && !validateOption) {
     mdLinks(pathInput, {validate: false})
       .then(linksArray => {
-        console.log(` ${colors.reset}Total: ${colors.blue}${linksArray.length} \n ${colors.reset}Unique: ${colors.teal}${countUniqueLinks(linksArray)}`)
-      })
+        if(linksArray.length === 0)  {
+          console.log(`${colors.red} No links were found.`)  
+        } else {
+          console.log(` ${colors.reset}Total: ${colors.blue}${linksArray.length} \n ${colors.reset}Unique: ${colors.teal}${countUniqueLinks(linksArray)}`)
+        }
+      }) 
       .catch(error => {
-        console.error('catch de stats true', error.message);
+        console.error(`${colors.red}`, error.message);
       });
 } else if (statsOption && validateOption) {
-    mdLinks(pathInput, {validate: true})
+    mdLinks(pathInput, {validate: true}) 
       .then(linksArray => {
-        console.log(` ${colors.reset}Total: ${colors.blue}${linksArray.length} \n ${colors.reset}Unique: ${colors.teal}${countUniqueLinks(linksArray)} \n ${colors.reset}Broken: ${colors.red}${countBrokenLinks(linksArray)}`)
+        if(linksArray.length === 0)  {
+          console.log(`${colors.red} No links were found.`)  
+        } else {
+          console.log(` ${colors.reset}Total: ${colors.blue}${linksArray.length} \n ${colors.reset}Unique: ${colors.teal}${countUniqueLinks(linksArray)} \n ${colors.reset}Broken: ${colors.red}${countBrokenLinks(linksArray)}`)
+        }
       })
       .catch(error => {
-        console.error('catch de stats y validate true', error.message)
+        console.error(`${colors.red}`, error.message)
       });
-};
+} else {
+  console.log(`Write a valid command.`)
+}
