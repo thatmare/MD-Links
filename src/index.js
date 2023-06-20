@@ -46,4 +46,5 @@ const mdLinks = (pathInput, options = { validate }) => {
 
 module.exports = {
   mdLinks,
+  linksToAnalyze,
 }
