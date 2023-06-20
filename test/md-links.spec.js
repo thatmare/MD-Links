@@ -1,8 +1,69 @@
+const axios = require('axios');
 const { mdLinks } = require('../src/index.js');
-// const { httpRequest } = require('../src/utils.js');
-const { countBrokenLinks, countUniqueLinks } = require('../src/utils.js')
+const { countBrokenLinks, countUniqueLinks, httpRequest } = require('../src/utils.js')
 const pathInputFile = '.\\carpetaejemplo\\tale.md';
 const pathInputDir = '.\\carpetaejemplo';
+
+jest.mock('axios');
+
+describe('httpRequest', () => {
+  it('must return an array of objects with status 200 and message OK', () => {
+    axios.get.mockResolvedValue({ status: 200, statusText: 'OK' });
+
+    const links = [{ title: 'Google', link: 'https://www.google.com', path: 'C:/Documents/file.md' }];
+
+    return httpRequest(links)
+      .then(result => {
+        expect(result).toEqual([
+          { 
+            title: 'Google',
+            link: 'https://www.google.com',
+            path: 'C:/Documents/file.md',
+            status: 200,
+            message: 'OK'
+          }
+        ])
+      });
+  });
+
+  it('must return an array of objects with status 404 and message FAIL', () => {
+    axios.get.mockRejectedValue({ response: { status: 404 }});
+
+    const links = [ { title: 'Pixar', link: 'https://www.pixar.com/error404', path: 'C:/Documents/file.md' }];
+
+    return httpRequest(links)
+      .then(result => {
+        expect(result).toEqual([
+          { 
+            title: 'Pixar',
+            link: 'https://www.pixar.com/error404',
+            path: 'C:/Documents/file.md',
+            status: 404,
+            message: 'FAIL'
+          }
+        ])
+      })
+  })
+
+  it('must return an array of objects with status null and message FAIL', () => {
+    axios.get.mockRejectedValue({ request: {} });
+
+    const links = [ { title: 'Googleea', link: 'https://www.googleeacom', path: 'C:/Documents/file.md' }];
+
+    return httpRequest(links)
+      .then(result => {
+        expect(result).toEqual([
+          { 
+            title: 'Googleea',
+            link: 'https://www.googleeacom',
+            path: 'C:/Documents/file.md',
+            status: null,
+            message: 'FAIL'
+          }
+        ])
+      })
+  })
+})
 
 describe('stats for mdLinks', () => {
   it('countBrokenLinks must return 2 when links have a code equal to or bigger than 400', () => {
