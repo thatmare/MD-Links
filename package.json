@@ -1,6 +1,6 @@
 {
-  "name": "md-links",
-  "version": "0.1.0",
+  "name": "md-links-thatmare",
+  "version": "1.2.1",
   "scripts": {
     "test": "jest"
   },
@@ -40,5 +40,21 @@
   },
   "devDependencies": {
     "jest": "^29.5.0"
-  }
+  },
+  "author": "Marissa Vargas https://github.com/thatmare",
+  "keywords": [
+    "node.js",
+    "filesystem",
+    "markdown",
+    "links",
+    "library",
+    "cli"
+  ],
+  "description": "md-links thatmare is a library and a command-line interface that analyzes links in Markdown files.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/thatmare/MD-Links.git"
+  },
+  "homepage": "https://github.com/thatmare/MD-Links",
+  "license": "ISC"
 }
