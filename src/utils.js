@@ -2,16 +2,18 @@ const axios = require('axios');
 const fs = require('fs'); 
 const path = require('path');
 
-const resolvePath = (pathInput) => { // recibe input de la ruta
-  const boolean = path.isAbsolute(pathInput); // isAbsolute regresa booleano si la ruta es absoluta o no
-  if(!boolean) { // si es falso (es decir, es relativa)
-    return path.resolve(pathInput); // regresar la ruta resuelta a absoluta
-  } else { // si es true (es absoluta)
-    return pathInput; // regresar el input igual
+// returns a path resolved (an absolute path)
+const resolvePath = (pathInput) => { 
+  const boolean = path.isAbsolute(pathInput); 
+  if(!boolean) { 
+    return path.resolve(pathInput); 
+  } else { 
+    return pathInput; 
   };
 };
 
-const doesPathExist = (pathResolved) => { // esta fx recibe la ruta resuelta a absoluta
+// checks if the path is valide or if it exists in the fs
+const doesPathExist = (pathResolved) => { 
   return new Promise((resolve, reject) => { 
     fs.access(pathResolved, (err) => { 
       if(err) {
@@ -23,6 +25,7 @@ const doesPathExist = (pathResolved) => { // esta fx recibe la ruta resuelta a a
   });
 };
 
+// checks if the path is a file or a directory
 const isItFile = (existingPath) => {
   return new Promise((resolve, reject) => {
     fs.stat(existingPath, (err, stats) => {
@@ -35,6 +38,9 @@ const isItFile = (existingPath) => {
   })
 }
 
+// this fx is specific if the path is a directory
+// if so, it filters the markdown files
+// if there are more directories inside the directory argument, it will keep looking for md inside them
 const filterDirectorySync = (existingPath) => {
   const files = fs.readdirSync(existingPath);
   const absolutePaths = files.map(file => path.join(existingPath, file));
@@ -57,7 +63,7 @@ const filterDirectorySync = (existingPath) => {
   return foundFiles;
 };
 
-
+// gets the content of the md files
 const readingFile = (f) => {
   return new Promise((resolve, reject) => {
     fs.readFile(f, 'utf8', (err, data) => {
@@ -70,12 +76,13 @@ const readingFile = (f) => {
   });
 };
 
+// it filters the links in an array of objects
 const filterLinks = (file, content) => {
-  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g; // recupera dos grupos: texto entre corchetes y link entre paréntesis
+  const regEx = /\[([^\]]+)\]\((http[s]?:\/\/[^\)]+)\)/g; 
   
-  const links = Array.from(content.matchAll(regEx), matchedLink => { // crea un array a partir del contenido que hace match con la regEx
-    const title = matchedLink[1]; // título es el primer grupo 
-    const link = matchedLink[2]; // el link es el segundo grupo
+  const links = Array.from(content.matchAll(regEx), matchedLink => { 
+    const title = matchedLink[1];  
+    const link = matchedLink[2]; 
     
     return {
       title,
@@ -87,6 +94,7 @@ const filterLinks = (file, content) => {
   return links;
 };
   
+// does the http request
 const httpRequest = (links) => {
   const promises = links.map(link => {
     return axios
