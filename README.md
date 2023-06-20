@@ -17,6 +17,8 @@ With this package you're able to:
 * Validate links HTTP status.
 * Get statistics about the links. 
 
+[Check the npm package published here](https://www.npmjs.com/package/md-links-thatmare)
+
 ## 2. Install
 
 If you already have Node, just run `npm install md-links-thatmare`. 
