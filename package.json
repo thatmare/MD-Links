@@ -53,5 +53,6 @@
     "url": "https://github.com/thatmare/MD-Links.git"
   },
   "homepage": "https://github.com/thatmare/MD-Links",
-  "license": "ISC"
+  "license": "ISC",
+  "main": "./src/index.js"
 }
