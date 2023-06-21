@@ -1,6 +1,6 @@
 {
   "name": "md-links-thatmare",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "scripts": {
     "test": "jest"
   },
@@ -53,5 +53,6 @@
     "url": "https://github.com/thatmare/MD-Links.git"
   },
   "homepage": "https://github.com/thatmare/MD-Links",
-  "license": "ISC"
+  "license": "ISC",
+  "main": "./src/index.js"
 }
